@@ -1,6 +1,16 @@
 
 package proyectolab;
 
+import Clases.conectar;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -11,12 +21,35 @@ public class Login extends javax.swing.JFrame {
     /**
      * Creates new form Login
      */
+    
+    conectar cc = new conectar();
+    Connection cn =cc.conexion();
+    int admin = 0;
+    int Correcto = 0;
     public Login() {
         initComponents();
         this.setLocationRelativeTo(null);
         
     }
     Principal principal = new Principal();
+    
+    public void Buscar (String User, String Contraseña)
+    {
+        String sql = "SELECT * FROM encargado WHERE encargado.Usuario = '"+ User+"' AND encargado.Contrasena = '" + Contraseña+"'";
+        try {
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            if(rs.next())
+            {
+                User = rs.getString("nombre");
+                admin = rs.getInt("Admin");
+                Correcto = 1;
+                
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Error de Conexion", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -41,8 +74,9 @@ public class Login extends javax.swing.JFrame {
         setName("frameLogin"); // NOI18N
         setUndecorated(true);
 
-        PanelLogin.setBackground(new java.awt.Color(0, 0, 102));
+        PanelLogin.setBackground(new java.awt.Color(0, 0, 51));
 
+        jLabelImagen.setForeground(new java.awt.Color(255, 255, 255));
         jLabelImagen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/User.png"))); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -53,8 +87,8 @@ public class Login extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Contraseña");
 
-        txtUsuario.setEditable(false);
-        txtUsuario.setBackground(new java.awt.Color(0, 0, 102));
+        txtUsuario.setBackground(new java.awt.Color(0, 0, 51));
+        txtUsuario.setForeground(new java.awt.Color(153, 153, 255));
         txtUsuario.setBorder(null);
 
         jSeparator1.setBackground(new java.awt.Color(0, 0, 0));
@@ -65,7 +99,7 @@ public class Login extends javax.swing.JFrame {
 
         jButtonIngresar.setBackground(new java.awt.Color(0, 0, 0));
         jButtonIngresar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jButtonIngresar.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonIngresar.setForeground(new java.awt.Color(0, 0, 51));
         jButtonIngresar.setText("Ingresar");
         jButtonIngresar.setBorder(null);
         jButtonIngresar.addActionListener(new java.awt.event.ActionListener() {
@@ -81,7 +115,8 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jPasswordField1.setBackground(new java.awt.Color(0, 0, 102));
+        jPasswordField1.setBackground(new java.awt.Color(0, 0, 51));
+        jPasswordField1.setForeground(new java.awt.Color(153, 153, 255));
         jPasswordField1.setBorder(null);
         jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -161,8 +196,17 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
     private void jButtonIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonIngresarActionPerformed
+        Buscar(txtUsuario.getText(), String.valueOf(jPasswordField1.getPassword()));
+        if (Correcto == 1)
+        {
         principal.setVisible(true);
         this.dispose();
+        }
+        else 
+        {
+           JOptionPane.showMessageDialog(null,"Usuario o contraseña incorrectos");
+        }
+
     }//GEN-LAST:event_jButtonIngresarActionPerformed
 
     /**

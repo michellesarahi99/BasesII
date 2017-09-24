@@ -1,17 +1,27 @@
 package proyectolab;
 
+import Clases.Paciente;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author miche
  */
+
 public class Pacientes extends javax.swing.JFrame {
 
     Principal p; //Objeto del frame principal
- 
+    Paciente paciente; //Objeto de la clase paciente
+
     public Pacientes() {
         initComponents();
         this.setLocationRelativeTo(null); //Frame en el centro
@@ -19,7 +29,7 @@ public class Pacientes extends javax.swing.JFrame {
         panelInicio.setSize(this.getWidth(),this.getHeight());
         panelIngreso.setVisible(false);
         panelVer.setVisible(false);
-        panelEditar.setVisible(false);
+        paciente = new Paciente();
     }
 
     /**
@@ -43,11 +53,17 @@ public class Pacientes extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         txtBuscar = new javax.swing.JTextField();
-        panelEditar = new javax.swing.JPanel();
+        btnBuscar = new javax.swing.JButton();
+        btnBorrar = new javax.swing.JButton();
+        txtNewNombre = new javax.swing.JTextField();
+        txtNewApellido = new javax.swing.JTextField();
+        txtNewDireccion = new javax.swing.JTextField();
+        txtNewNIT = new javax.swing.JTextField();
+        btnActualizar = new javax.swing.JButton();
+        btontelefononuevo = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         MenuIngresar = new javax.swing.JMenu();
         MenuVer = new javax.swing.JMenu();
-        MenuEditar = new javax.swing.JMenu();
         MenuSalir = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -58,11 +74,11 @@ public class Pacientes extends javax.swing.JFrame {
         panelInicio.setLayout(panelInicioLayout);
         panelInicioLayout.setHorizontalGroup(
             panelInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 721, Short.MAX_VALUE)
+            .addGap(0, 865, Short.MAX_VALUE)
         );
         panelInicioLayout.setVerticalGroup(
             panelInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 449, Short.MAX_VALUE)
+            .addGap(0, 477, Short.MAX_VALUE)
         );
 
         getContentPane().add(panelInicio, "card5");
@@ -95,17 +111,16 @@ public class Pacientes extends javax.swing.JFrame {
                 .addGroup(panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelIngresoLayout.createSequentialGroup()
                         .addGap(83, 83, 83)
-                        .addGroup(panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtApellido)
-                                .addComponent(txtDireccion)
-                                .addComponent(txtTelefono)
-                                .addComponent(txtNIT, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtApellido)
+                            .addComponent(txtDireccion)
+                            .addComponent(txtTelefono)
+                            .addComponent(txtNIT, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                            .addComponent(txtNombre)))
                     .addGroup(panelIngresoLayout.createSequentialGroup()
                         .addGap(129, 129, 129)
                         .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(79, Short.MAX_VALUE))
+                .addContainerGap(582, Short.MAX_VALUE))
         );
         panelIngresoLayout.setVerticalGroup(
             panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -122,7 +137,7 @@ public class Pacientes extends javax.swing.JFrame {
                 .addComponent(txtNIT, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(189, Short.MAX_VALUE))
         );
 
         getContentPane().add(panelIngreso, "card4");
@@ -140,6 +155,11 @@ public class Pacientes extends javax.swing.JFrame {
 
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         txtBuscar.setBackground(new java.awt.Color(0, 102, 102));
@@ -150,41 +170,101 @@ public class Pacientes extends javax.swing.JFrame {
             }
         });
 
+        btnBuscar.setText("Buscar");
+        btnBuscar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnBuscarMouseClicked(evt);
+            }
+        });
+
+        btnBorrar.setText("Borrar");
+        btnBorrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnBorrarMouseClicked(evt);
+            }
+        });
+
+        txtNewNIT.setEditable(false);
+
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnActualizarMouseClicked(evt);
+            }
+        });
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
+
+        btontelefononuevo.setText("Agregar Telefono");
+        btontelefononuevo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btontelefononuevoMouseClicked(evt);
+            }
+        });
+        btontelefononuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btontelefononuevoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelVerLayout = new javax.swing.GroupLayout(panelVer);
         panelVer.setLayout(panelVerLayout);
         panelVerLayout.setHorizontalGroup(
             panelVerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelVerLayout.createSequentialGroup()
                 .addGap(97, 97, 97)
+                .addGroup(panelVerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(panelVerLayout.createSequentialGroup()
+                        .addComponent(btontelefononuevo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnBorrar))
+                    .addGroup(panelVerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(panelVerLayout.createSequentialGroup()
+                            .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(52, 52, 52)
+                            .addComponent(btnBuscar))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addGroup(panelVerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(106, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelVerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(txtNewNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNewApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNewDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNewNIT, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnActualizar, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(22, 22, 22))
         );
         panelVerLayout.setVerticalGroup(
             panelVerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelVerLayout.createSequentialGroup()
-                .addGap(54, 54, 54)
-                .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(53, 53, 53)
+                .addGroup(panelVerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBuscar))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(87, Short.MAX_VALUE))
+                .addGroup(panelVerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelVerLayout.createSequentialGroup()
+                        .addComponent(txtNewNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(38, 38, 38)
+                        .addComponent(txtNewApellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43)
+                        .addComponent(txtNewDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(42, 42, 42)
+                        .addComponent(txtNewNIT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33)
+                        .addComponent(btnActualizar)))
+                .addGap(18, 18, 18)
+                .addGroup(panelVerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnBorrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btontelefononuevo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(72, 72, 72))
         );
 
         getContentPane().add(panelVer, "card3");
-
-        javax.swing.GroupLayout panelEditarLayout = new javax.swing.GroupLayout(panelEditar);
-        panelEditar.setLayout(panelEditarLayout);
-        panelEditarLayout.setHorizontalGroup(
-            panelEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 721, Short.MAX_VALUE)
-        );
-        panelEditarLayout.setVerticalGroup(
-            panelEditarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 449, Short.MAX_VALUE)
-        );
-
-        getContentPane().add(panelEditar, "card4");
 
         MenuIngresar.setText("Ingresar paciente");
         MenuIngresar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -207,14 +287,6 @@ public class Pacientes extends javax.swing.JFrame {
         });
         jMenuBar1.add(MenuVer);
 
-        MenuEditar.setText("Editar paciente");
-        MenuEditar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                MenuEditarMouseClicked(evt);
-            }
-        });
-        jMenuBar1.add(MenuEditar);
-
         MenuSalir.setText("Salir");
         MenuSalir.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -232,77 +304,30 @@ public class Pacientes extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private void MenuSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuSalirActionPerformed
-        
-    }//GEN-LAST:event_MenuSalirActionPerformed
-
-    private void MenuIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuIngresarActionPerformed
-       /* panelVer.setVisible(false);
-        panelEditar.setVisible(false);
-        panelIngreso.setVisible(true);
-        panelIngreso.setSize(this.getWidth(),this.getHeight()); */
-        
-    }//GEN-LAST:event_MenuIngresarActionPerformed
-
-    private void MenuIngresarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuIngresarMouseClicked
-        this.setSize(362,338);
-        this.setLocationRelativeTo(null);
-        panelVer.setVisible(false);
-        panelInicio.setVisible(false);
-        panelEditar.setVisible(false);
-        panelIngreso.setVisible(true);
-        this.textFocusPanelIngreso();
-        panelIngreso.setSize(this.getWidth(),this.getHeight());
-    }//GEN-LAST:event_MenuIngresarMouseClicked
-
-    private void MenuSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuSalirMouseClicked
-        /*Opción para salir, cierra éste frame y abre el frame principal */
-        p = new Principal();
-        p.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_MenuSalirMouseClicked
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+
+        if (txtNombre.getText().compareTo("Nombre")!=0&& 
+            txtApellido.getText().compareTo("Apellido")!=0 &&
+            txtDireccion.getText().compareTo("Dirección")!=0&&
+            txtNIT.getText().compareTo("NIT")!=0)
+        {
+        try {
+            paciente.Insertar(txtNombre.getText(),txtApellido.getText(), txtDireccion.getText(),txtNIT.getText());
+            Telefono Tel = new Telefono();
+            Tel.setVisible(true);
+            Tel.NIT = txtNIT.getText();
+        } catch (SQLException ex) {
+            Logger.getLogger(Pacientes.class.getName()).log(Level.SEVERE, null, ex);
+        }
         textFocusPanelIngreso();
-    }//GEN-LAST:event_btnAgregarActionPerformed
-
-    private void MenuVerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuVerMouseClicked
-        /*Tamaño y locaion del frame*/
-        this.setSize(721,449);
-        this.setLocationRelativeTo(null);
-        /*Se hace visible el panel Ver pacientes*/
-        panelVer.setVisible(true);
-        panelEditar.setVisible(false);
-        panelIngreso.setVisible(false);
-        panelInicio.setVisible(false);
-        panelVer.setSize(this.getWidth(),this.getHeight());
-        /*Texto para la caja de busqueda*/
-        txtBuscar.setText("Buscar");
-        txtBuscar.setForeground(Color.LIGHT_GRAY);
-        txtBuscar.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent e) {
-                txtBuscar.setText("");
-                txtBuscar.setForeground(Color.WHITE);
-            }
-
-            public void focusLost(FocusEvent e) {
-                if("".equals(txtBuscar.getText())){
-                    txtBuscar.setText("Nombre");
-                    txtBuscar.setForeground(Color.LIGHT_GRAY);
-                }
-                
-            } 
-        });
+        }
+        else 
+        {
+            JOptionPane.showMessageDialog(null, "Ingrese cada campo porfavor :3");
+        }
         
-    }//GEN-LAST:event_MenuVerMouseClicked
-
-    private void MenuEditarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuEditarMouseClicked
-        panelVer.setVisible(false);
-        panelEditar.setVisible(true);
-        panelIngreso.setVisible(false);
-        panelInicio.setVisible(false);
-        panelEditar.setSize(this.getWidth(),this.getHeight());
-    }//GEN-LAST:event_MenuEditarMouseClicked
+    }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void txtBuscarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyPressed
         /*
@@ -323,6 +348,119 @@ public class Pacientes extends javax.swing.JFrame {
             } 
         }); */
     }//GEN-LAST:event_txtBuscarKeyPressed
+
+    private void btnBuscarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBuscarMouseClicked
+        // TODO add your handling code here:
+        jTable1.setModel(paciente.cargar(txtBuscar.getText()));
+    }//GEN-LAST:event_btnBuscarMouseClicked
+
+    private void btnBorrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBorrarMouseClicked
+        // TODO add your handling code here:
+        int row = jTable1.getSelectedRow();
+        paciente.Deshabilitar(jTable1.getValueAt(row, 3).toString());
+        jTable1.setModel(paciente.cargar(""));
+    }//GEN-LAST:event_btnBorrarMouseClicked
+
+    private void btnActualizarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnActualizarMouseClicked
+        // TODO add your handling code here:
+        paciente.Modificar(txtNewNombre.getText(), txtNewApellido.getText(), txtNewDireccion.getText(), txtNewNIT.getText());
+        jTable1.setModel(paciente.cargar(""));
+    }//GEN-LAST:event_btnActualizarMouseClicked
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        int row = jTable1.getSelectedRow();
+        if (row!=-1)
+        {
+        txtNewNombre.setText(jTable1.getValueAt(row, 0).toString());
+        txtNewApellido.setText(jTable1.getValueAt(row, 1).toString());
+        txtNewDireccion.setText(jTable1.getValueAt(row, 2).toString());
+        txtNewNIT.setText(jTable1.getValueAt(row, 3).toString());
+        }
+        
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void MenuSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuSalirActionPerformed
+
+    }//GEN-LAST:event_MenuSalirActionPerformed
+
+    private void MenuSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuSalirMouseClicked
+        /*Opción para salir, cierra éste frame y abre el frame principal */
+        p = new Principal();
+        p.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_MenuSalirMouseClicked
+
+    private void MenuVerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuVerMouseClicked
+        /*Tamaño y locaion del frame*/
+        this.setSize(850,550);
+        this.setLocationRelativeTo(null);
+        /*Se hace visible el panel Ver pacientes*/
+        panelVer.setVisible(true);
+        panelIngreso.setVisible(false);
+        panelInicio.setVisible(false);
+        panelVer.setSize(this.getWidth(),this.getHeight());
+        /*Texto para la caja de busqueda*/
+        txtBuscar.setText("Buscar");
+        txtBuscar.setForeground(Color.LIGHT_GRAY);
+        txtBuscar.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent e) {
+                txtBuscar.setText("");
+                txtBuscar.setForeground(Color.WHITE);
+            }
+
+            public void focusLost(FocusEvent e) {
+                if("".equals(txtBuscar.getText())){
+                    txtBuscar.setText("Nombre");
+                    txtBuscar.setForeground(Color.LIGHT_GRAY);
+                }
+
+            }
+        });
+
+        //Inicio aqui con ammm... la consulta :'v
+
+        jTable1.setModel(paciente.cargar(""));
+
+    }//GEN-LAST:event_MenuVerMouseClicked
+
+    private void MenuIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuIngresarActionPerformed
+        /* panelVer.setVisible(false);
+        panelEditar.setVisible(false);
+        panelIngreso.setVisible(true);
+        panelIngreso.setSize(this.getWidth(),this.getHeight()); */
+
+    }//GEN-LAST:event_MenuIngresarActionPerformed
+
+    private void MenuIngresarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuIngresarMouseClicked
+        this.setSize(400, 370);
+        this.setLocationRelativeTo(null);
+        panelVer.setVisible(false);
+        panelInicio.setVisible(false);
+        panelIngreso.setVisible(true);
+        this.textFocusPanelIngreso();
+        panelIngreso.setSize(this.getWidth(),this.getHeight());
+    }//GEN-LAST:event_MenuIngresarMouseClicked
+
+    private void btontelefononuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btontelefononuevoMouseClicked
+        // TODO add your handling code here:
+        if (txtNewNIT.getText().compareTo("")!=0)
+        {
+            Telefono Tel = new Telefono();
+            Tel.setVisible(true);
+            Tel.NIT = txtNewNIT.getText();
+        }
+        else {
+        JOptionPane.showMessageDialog(null, "Seleccione paciente :9");}
+    }//GEN-LAST:event_btontelefononuevoMouseClicked
+
+    private void btontelefononuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btontelefononuevoActionPerformed
+
+    }//GEN-LAST:event_btontelefononuevoActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnActualizarActionPerformed
    
     /**
      * @param args the command line arguments
@@ -358,6 +496,7 @@ public class Pacientes extends javax.swing.JFrame {
             }
         });
     }
+
 
     /*Metodo para informacion de los textField*/
     public void textFocusPanelIngreso(){
@@ -445,15 +584,17 @@ public class Pacientes extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu MenuEditar;
     private javax.swing.JMenu MenuIngresar;
     private javax.swing.JMenu MenuSalir;
     private javax.swing.JMenu MenuVer;
+    private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnBorrar;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btontelefononuevo;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JPanel panelEditar;
     private javax.swing.JPanel panelIngreso;
     private javax.swing.JPanel panelInicio;
     private javax.swing.JPanel panelVer;
@@ -461,6 +602,10 @@ public class Pacientes extends javax.swing.JFrame {
     private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtNIT;
+    private javax.swing.JTextField txtNewApellido;
+    private javax.swing.JTextField txtNewDireccion;
+    private javax.swing.JTextField txtNewNIT;
+    private javax.swing.JTextField txtNewNombre;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables

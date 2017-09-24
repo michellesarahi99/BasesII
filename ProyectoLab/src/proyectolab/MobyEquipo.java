@@ -5,17 +5,33 @@
  */
 package proyectolab;
 
+import Clases.conectar;
+import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+    
 /**
  *
  * @author miche
  */
 public class MobyEquipo extends javax.swing.JFrame {
-
-    /**
-     * Creates new form MobyEquipo
-     */
+    conectar cc = new conectar();
+    Connection cn =cc.conexion();
+    Principal p;
+    
     public MobyEquipo() {
         initComponents();
+        panelInicio.setVisible(true);
+        panelIngreso.setVisible(false);
+        panelModificar.setVisible(false);
     }
 
     /**
@@ -27,72 +43,424 @@ public class MobyEquipo extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
         panelIngreso = new javax.swing.JPanel();
-        panelVer = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        btnIngresar = new javax.swing.JButton();
+        txtNombre = new javax.swing.JTextField();
+        txtDescripcion = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txtCodigo = new javax.swing.JTextField();
+        panelModificar = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        txtCodigo1 = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        txtNombre1 = new javax.swing.JTextField();
+        btnActualizar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        txtDescripcion1 = new javax.swing.JTextField();
+        txtBuscar = new javax.swing.JTextField();
+        panelInicio = new javax.swing.JPanel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        MenuOpciones = new javax.swing.JMenu();
+        MenuIngreso = new javax.swing.JMenuItem();
+        MenuVer = new javax.swing.JMenuItem();
+        MenuSalir = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new java.awt.CardLayout());
 
-        jTabbedPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        panelIngreso.setBackground(new java.awt.Color(0, 102, 102));
 
-        panelIngreso.setBackground(new java.awt.Color(102, 102, 255));
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel1.setText("Ingreso de mobiliario y equipo");
+
+        btnIngresar.setText("Ingresar");
+        btnIngresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIngresarActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Nombre:");
+
+        jLabel3.setText("Descripción:");
+
+        jLabel4.setText("Código:");
 
         javax.swing.GroupLayout panelIngresoLayout = new javax.swing.GroupLayout(panelIngreso);
         panelIngreso.setLayout(panelIngresoLayout);
         panelIngresoLayout.setHorizontalGroup(
             panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 564, Short.MAX_VALUE)
+            .addGroup(panelIngresoLayout.createSequentialGroup()
+                .addGroup(panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelIngresoLayout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addGroup(panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addGroup(panelIngresoLayout.createSequentialGroup()
+                                .addGroup(panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4))
+                                .addGap(31, 31, 31)
+                                .addGroup(panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtDescripcion, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                                    .addComponent(txtNombre)
+                                    .addComponent(txtCodigo)))))
+                    .addGroup(panelIngresoLayout.createSequentialGroup()
+                        .addGap(156, 156, 156)
+                        .addComponent(btnIngresar)))
+                .addContainerGap(249, Short.MAX_VALUE))
         );
         panelIngresoLayout.setVerticalGroup(
             panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 457, Short.MAX_VALUE)
+            .addGroup(panelIngresoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelIngresoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addGap(18, 18, 18)
+                .addComponent(btnIngresar)
+                .addContainerGap(107, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Ingreso", panelIngreso);
+        getContentPane().add(panelIngreso, "card2");
 
-        panelVer.setBackground(new java.awt.Color(102, 102, 255));
+        panelModificar.setBackground(new java.awt.Color(204, 51, 255));
 
+        jLabel5.setText("Descripción:");
+
+        jLabel6.setText("Código:");
+
+        jLabel7.setText("Nombre:");
+
+        jTable1.setBackground(new java.awt.Color(204, 51, 255));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
-        javax.swing.GroupLayout panelVerLayout = new javax.swing.GroupLayout(panelVer);
-        panelVer.setLayout(panelVerLayout);
-        panelVerLayout.setHorizontalGroup(
-            panelVerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelVerLayout.createSequentialGroup()
-                .addGap(54, 54, 54)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(58, Short.MAX_VALUE))
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
+
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        txtBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBuscarActionPerformed(evt);
+            }
+        });
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyPressed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelModificarLayout = new javax.swing.GroupLayout(panelModificar);
+        panelModificar.setLayout(panelModificarLayout);
+        panelModificarLayout.setHorizontalGroup(
+            panelModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelModificarLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(panelModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelModificarLayout.createSequentialGroup()
+                        .addGroup(panelModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtNombre1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCodigo1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(68, 68, 68))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelModificarLayout.createSequentialGroup()
+                        .addComponent(btnActualizar)
+                        .addGap(49, 49, 49))))
+            .addGroup(panelModificarLayout.createSequentialGroup()
+                .addGroup(panelModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelModificarLayout.createSequentialGroup()
+                        .addGap(46, 46, 46)
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelModificarLayout.createSequentialGroup()
+                        .addGap(54, 54, 54)
+                        .addComponent(btnEliminar)))
+                .addContainerGap(353, Short.MAX_VALUE))
+            .addGroup(panelModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panelModificarLayout.createSequentialGroup()
+                    .addGap(49, 49, 49)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(30, 30, 30)
+                    .addGroup(panelModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(txtDescripcion1, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel5)
+                        .addComponent(jLabel7)
+                        .addComponent(jLabel6))
+                    .addContainerGap(50, Short.MAX_VALUE)))
         );
-        panelVerLayout.setVerticalGroup(
-            panelVerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelVerLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        panelModificarLayout.setVerticalGroup(
+            panelModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelModificarLayout.createSequentialGroup()
+                .addGap(65, 65, 65)
+                .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(txtCodigo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtNombre1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 171, Short.MAX_VALUE)
+                .addComponent(btnActualizar)
+                .addGap(13, 13, 13)
+                .addComponent(btnEliminar)
+                .addGap(120, 120, 120))
+            .addGroup(panelModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panelModificarLayout.createSequentialGroup()
+                    .addGap(120, 120, 120)
+                    .addGroup(panelModificarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(panelModificarLayout.createSequentialGroup()
+                            .addComponent(jLabel6)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel7)
+                            .addGap(18, 18, 18)
+                            .addComponent(jLabel5)
+                            .addGap(18, 18, 18)
+                            .addComponent(txtDescripcion1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addContainerGap(162, Short.MAX_VALUE)))
         );
 
-        jTabbedPane1.addTab("Ver", panelVer);
+        getContentPane().add(panelModificar, "card3");
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 571, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+        javax.swing.GroupLayout panelInicioLayout = new javax.swing.GroupLayout(panelInicio);
+        panelInicio.setLayout(panelInicioLayout);
+        panelInicioLayout.setHorizontalGroup(
+            panelInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 713, Short.MAX_VALUE)
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+        panelInicioLayout.setVerticalGroup(
+            panelInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 512, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.getAccessibleContext().setAccessibleName("Ingresar");
+        getContentPane().add(panelInicio, "card4");
+
+        MenuOpciones.setText("Opciones");
+
+        MenuIngreso.setText("Ingreso");
+        MenuIngreso.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                MenuIngresoMouseClicked(evt);
+            }
+        });
+        MenuIngreso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuIngresoActionPerformed(evt);
+            }
+        });
+        MenuOpciones.add(MenuIngreso);
+
+        MenuVer.setText("Ver y Modificar");
+        MenuVer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuVerActionPerformed(evt);
+            }
+        });
+        MenuOpciones.add(MenuVer);
+
+        MenuSalir.setText("Salir");
+        MenuSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenuSalirActionPerformed(evt);
+            }
+        });
+        MenuOpciones.add(MenuSalir);
+
+        jMenuBar1.add(MenuOpciones);
+
+        setJMenuBar(jMenuBar1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
+        this.Insertar(txtNombre.getText(), txtCodigo.getText(), txtDescripcion.getText());
+    }//GEN-LAST:event_btnIngresarActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        int row = jTable1.getSelectedRow();
+        if (row!=-1){
+            txtNombre1.setText(jTable1.getValueAt(row, 1).toString());
+            txtNombre1.setEnabled(false);
+            txtCodigo1.setText(jTable1.getValueAt(row, 0).toString());
+            txtCodigo1.setEnabled(false);
+            txtDescripcion1.setText(jTable1.getValueAt(row, 2).toString());
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        this.Modificar(txtDescripcion1.getText(), txtCodigo1.getText());
+    }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void MenuSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuSalirActionPerformed
+        this.dispose();
+        p = new Principal();
+        p.setVisible(true);
+    }//GEN-LAST:event_MenuSalirActionPerformed
+
+    private void txtBuscarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            
+            jTable1.setModel(cargar(txtBuscar.getText()));
+        }
+    }//GEN-LAST:event_txtBuscarKeyPressed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        int row = jTable1.getSelectedRow();
+        Eliminar(jTable1.getValueAt(row, 0).toString());
+        jTable1.setModel(cargar(""));
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void MenuIngresoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuIngresoMouseClicked
+
+    }//GEN-LAST:event_MenuIngresoMouseClicked
+
+    private void MenuIngresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuIngresoActionPerformed
+        panelInicio.setVisible(false);
+        panelIngreso.setVisible(true);
+        panelModificar.setVisible(false);
+    }//GEN-LAST:event_MenuIngresoActionPerformed
+
+    private void MenuVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuVerActionPerformed
+        panelInicio.setVisible(false);
+        panelIngreso.setVisible(false);
+        panelModificar.setVisible(true);
+    }//GEN-LAST:event_MenuVerActionPerformed
+
+    private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscarActionPerformed
+    
+    /*Métodos para las consultas sql*/
+
+
+/**
+ * 
+ * @param Nombre
+ * @param Codigo
+ * @param Descripcion
+ * Metodo para insertar en la tabla MobYEquipo
+ */
+
+    public void Insertar(String Nombre, String Codigo, String Descripcion){ 
+        String sql = "INSERT INTO MobYEquipo (Codigo,Nombre,Descripcion) VALUES (?,?,?)";     
+        try {
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setString(1, Codigo);
+            pst.setString(2, Nombre);
+            pst.setString(3, Descripcion);
+
+            int n = pst.executeUpdate();
+            if(n>0)
+            {
+                JOptionPane.showMessageDialog(null, "Ingresado con éxito");
+            }
+       } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Error de Conexion", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    /**
+     * @param Codigo
+     * @param Descripcion
+     * Metodo para modificar la descipcion de un mobiliario
+     */
+    public void Modificar(String Descripcion, String Codigo){
+       String sql = "UPDATE MobYEquipo SET MobYEquipo.Descripcion = '" + Descripcion  
+                    + "' WHERE Codigo = '" + Codigo + "';";
+       try{
+            PreparedStatement pps = cn.prepareStatement(sql);
+            pps.executeUpdate();
+            JOptionPane.showMessageDialog(null, "DATOS ACTUALIZADOS");
+       } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Error de Conexion", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    /**
+     * 
+     * @param Codigo 
+     * Metodo para eliminar un dato insertado en MobYEquipo, utilizando el codigo
+     * como referencia
+     */
+    public void Eliminar(String Codigo){
+       String sql = "DELETE FROM MobYEquipo WHERE MobYEquipo.Codigo = '" + Codigo +"';"; //Sentencia sql
+       try{
+            PreparedStatement pps = cn.prepareStatement(sql);
+            pps.executeUpdate(); //Ejecucion de la sentencia sql
+            JOptionPane.showMessageDialog(null, "Se eliminó exitosamente");
+       } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Error de Conexion", JOptionPane.ERROR_MESSAGE);
+        }
+   }
+    
+    /*Crea el modelo de la tabla para ver los datos*/
+    public DefaultTableModel cargar (String Busca){
+        String [] titulos = {"Codigo", "Nombre", "Descripcion"};
+        String [] registros = new String[3];
+        DefaultTableModel model;
+        model = new DefaultTableModel(null, titulos);
+        if (Busca.compareTo("")!=0){
+            String sql = "SELECT mobyequipo.Codigo, mobyequipo.Nombre, mobyequipo.Descripcion FROM MobYEquipo;";
+            try {
+                Statement st = cn.createStatement();
+                ResultSet rs = st.executeQuery(sql);
+                while(rs.next()){
+                    registros[0] = rs.getString("Codigo");
+                    registros[1] = rs.getString("Nombre");
+                    registros[2] = rs.getString("Descripcion");
+                    model.addRow(registros);                
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex);
+            }
+        }else{
+          String sql = "SELECT * FROM MobYEquipo "
+                  + "WHERE MobYEquipo.Codigo = '"+ Busca +"' "
+                  + "OR MobYEquipo.Nombre = '"+Busca+"';";
+            try {
+                Statement st = cn.createStatement();
+                ResultSet rs = st.executeQuery(sql);
+                while(rs.next()){
+                    registros[0] = rs.getString("Codigo");
+                    registros[1] = rs.getString("Nombre");
+                    registros[2] = rs.getString("Descripcion");
+                    model.addRow(registros);                
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex);
+                }  
+        }
+        return model;
+    }
     /**
      * @param args the command line arguments
      */
@@ -104,7 +472,7 @@ public class MobyEquipo extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -129,10 +497,32 @@ public class MobyEquipo extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem MenuIngreso;
+    private javax.swing.JMenu MenuOpciones;
+    private javax.swing.JMenuItem MenuSalir;
+    private javax.swing.JMenuItem MenuVer;
+    private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnIngresar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JPanel panelIngreso;
-    private javax.swing.JPanel panelVer;
+    private javax.swing.JPanel panelInicio;
+    private javax.swing.JPanel panelModificar;
+    private javax.swing.JTextField txtBuscar;
+    private javax.swing.JTextField txtCodigo;
+    private javax.swing.JTextField txtCodigo1;
+    private javax.swing.JTextField txtDescripcion;
+    private javax.swing.JTextField txtDescripcion1;
+    private javax.swing.JTextField txtNombre;
+    private javax.swing.JTextField txtNombre1;
     // End of variables declaration//GEN-END:variables
 }
